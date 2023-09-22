@@ -1,0 +1,133 @@
+<html>
+
+<head>
+  <title>Mission 1</title>
+  <meta charset="utf-8" />
+</head>
+
+<body>
+  <div id="app"></div>
+  <script>
+    const data1 = [
+      {
+        text: 'JS 공부하기',
+        isCompleted: true
+      },
+      {
+        text: 'JS 복습하기',
+        isCompleted: false
+      }
+    ];
+    const data2 = [
+      {
+        text: 'JS 공부하기2',
+        isCompleted: true
+      },
+      {
+        text: 'JS 복습하기2',
+        isCompleted: false
+      }
+    ];
+    const data3 = [
+      {
+        text: 'JS 공부하기3',
+        isCompleted: true
+      },
+      {
+        text: 'JS 복습하기3',
+        isCompleted: false
+      }
+    ];
+
+    function TodoList($app, initialState) {
+      this.$app = $app
+      this.$element = document.createElement('div');
+      this.state = initialState;
+
+      this.$app.appendChild(this.$element);
+
+      // this의 역할과 컨텍스트에 대한 개념에 대해서 잘 알아야 한다.
+      // 리액트는 펑션 스타일 컴포넌트로 바뀌면서 this 키워드를 덜 쓰게 되다 보니 이런걸 덜 신경쓰게 되니까 잘 알아놓자.
+      // 강의에서 신경 쓸 부분 중에 하나는 돔을 조작하는 코드는 렌더함수 안에만 있도록 해보자.
+      // 왜냐면 돔을 조작하는 코드가 여기저기에 흩어져 있다면 돔이 언제 어디서 바뀌는지 추적하기가 굉장히 어려워짐.
+      // 그래서 제약 조건을 두는 것임. 단점도 있을 수 있겠지만 장점이 크다.
+      this.render = () => {
+        if(!this.state){
+          this.state = [];
+        }
+
+        this.$element.innerHTML = this.state
+        // object destructuring
+        .map(({text, isCompleted}) => `<div>${isCompleted ? `<s>${text}</s>` : text}</div>`)
+        .join('');
+      };
+
+      // 에러를 throw할 때 중요한 것은 어디선가 catch를 해줘야 한다는 것을 명심.
+      this.validate = () => {
+        // new 키워드로 생성이 된 것이 맞는지 확인
+        // instanceof 대신 new.target을 사용해도 된다.
+        // if(!(this instanceof TodoList)){
+        if(!new.target){
+          throw new Error('new 키워드를 붙여주세요.');
+        }
+
+        // data가 존재하는지 체크. null과 undefined에 대한 처리는 잘 해주도록 하자.
+        // undefined인 경우는 new TodoList()
+        // null인 경우는 new TodoList(null)
+        if(this.state === null || this.state === undefined){
+          throw new Error('data가 없습니다.');
+        }
+
+        // data가 배열인지 체크. isArray 처럼 버전을 타는 기능들은 요샌 보통 사파리 같은 곳에서 문제가 되는 경우가 꽤 있음. can i use 사이트에서 점검하고 쓰는 습관을 들이자.
+        if(!Array.isArray(this.state)){
+          throw new Error('data는 배열이어야 합니다.')
+        }
+
+        // data 안에 text가 있고, string 인지 체크
+        // every는 배열의 모든 결과가 true여야 true. sum은 하나만 true여도 true
+        // hasOwnProperty를 사용해주는 것이 좋다.
+        if(!this.state.every((item) => item.text && typeof item.text === 'string' )){
+          throw new Error('data 안에 text가 없거나, string이 아닙니다.');
+        }
+
+        if(!this.state.every((item) => item.isCompleted !== undefined && typeof item.isCompleted === 'boolean')){
+          throw new Error('data 안에 isCompleted가 없거나, boolean이 아닙니다.');
+        }
+      }
+
+      this.setState = function(newState){
+        this.state = newState;
+        // 이런식으로 setState 안에서 분리되어 있던 함수들을 호출만 해주면 간단하게 정합성, 렌더링에 대한 처리가 가능하다.
+        this.validate();
+        this.render();
+      }
+
+      this.validate();
+      this.render();
+    }
+
+    // 이렇게 try catch를 통해 에러를 처리해줄 필요가 있다.
+    try {
+      const $app = document.querySelector('#app');
+      const todoList1 = new TodoList($app, data1);
+
+      setTimeout(() => {
+        todoList1.setState([{
+          text: 'new todo1',
+          isCompleted: false
+        },
+        {
+          text: 'new todo2',
+          isCompleted: true
+        },
+      ])
+      }, 1000)
+      // const todoList2 = new TodoList($app, data2);
+      // const todoList3 = new TodoList($app, data3);
+    } catch (error) {
+      // 사용자에게 에러를 인지시켜주는 것도 중요하다는 것을 알고 있자.
+      alert(error.message);      
+    }
+  </script>
+</body>
+</html>
