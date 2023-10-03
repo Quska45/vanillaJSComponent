@@ -1,7 +1,12 @@
-const initialState = JSON.parse(window.localStorage.getItem('todo-list'));
+const initialState = getItem('todo-list', []);
 const $target = document.querySelector('#todo-list');
 
-new App({
-  $target,
-  initialState
-})
+
+try {
+  new App({
+    $target,
+    initialState
+  });
+} catch(e) {
+  alert(e.message);
+}
