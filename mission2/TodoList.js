@@ -1,4 +1,4 @@
-function TodoList({ $target, initialState }) {
+function TodoList({ $target, initialState, onRemove, onToggle }) {
   this.$element = document.createElement('ul');
   $target.appendChild(this.$element);
 
@@ -6,9 +6,9 @@ function TodoList({ $target, initialState }) {
 
   this.render = function () {
     this.$element.innerHTML = this.state
-      .map(({text, isCompleted}) => {
+      .map(({text, isCompleted}, i) => {
         return `
-          <li>
+          <li data-index="${i}">
             ${
               isCompleted 
               ? `<s>${text}</s>` 
@@ -20,6 +20,9 @@ function TodoList({ $target, initialState }) {
       })
       .join('');
 
+      /**
+       * 이런식으로 여러개의 이벤트들로 처리할 수도 있지만 위임을 통해 하나로 처리하는 것도 가능 하다.
+      */
       // this.$element.querySelectorAll('button').forEach(($button, i) => {
       //   $button.addEventListener('click', (e) => {
       //     // 여기서 이벤트 전파를 중단 시켜서 버블링을 막을 수 있음.
@@ -52,18 +55,23 @@ function TodoList({ $target, initialState }) {
     this.render();
   };
 
+  // 이렇게 이벤트 버블링을 이용한 이벤트 위임을 통해 이벤트를 최적화해서 사용할 수 있음.
   this.$element.addEventListener('click', (e) => {
+    // closest 같은 api로 li를 찾아서 dataset를 간편하게 이용할 수 있는 방법도 있음.
+    const $li = e.target.closest('li');
+    if(!$li){
+      throw new Error('li 태그가 존재 하지 않습니다.');
+    }
+    // 커스텀 어트리뷰트로 불러오는 값은 무조건 스트링 값이라는 것을 알아두자.
+    const i = parseInt($li.dataset.index);
+
     // e.target을 통해 잡히는 타겟을 이용하면 이벤트 위임을 잘 구현할 수 있다.
     // ul에 걸어놓은 한개의 이벤트로 li, button에서 필요한 이벤트를 한번에 구현할 수 있다.
     if(e.target.tagName === 'BUTTON'){
       e.stopPropagation();
-      const nextState = [...this.state];
-      nextState.splice(i, 1);
-      this.setState(nextState);
+      onRemove(i);
     } else if(e.target.tagName === 'S' || e.target.tagName === 'LI'){
-      const nextState = [...this.state];
-      nextState[i].isCompleted = !nextState[i].isCompleted;
-      this.setState(nextState);
+      onToggle(i);
     }
   });
 

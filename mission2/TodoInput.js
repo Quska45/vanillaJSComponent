@@ -13,9 +13,11 @@ function TodoInput({ $target, onInput }) {
   this.render = () => {
     // 폼안에 버튼을 누르는 경우 자동으로 서밋을 발생 시키게 되어 있음.
     // 그래서 화면에 대한 새로고침이 발생 될 수 밖에 없음.
+    // 버튼의 타입을 button으로 지정해주면 form의 sumit이 발생하지 않도록 할 수 있음.
     this.$element.innerHTML = `
       <input type="text" placeholder="할 일을 입력해주세요.">
       <button>Add Todo</button>
+      <button class="remove-all" type="button">Remove All</button>
     `
   };
 
@@ -46,4 +48,9 @@ function TodoInput({ $target, onInput }) {
   //   this.$input.value = '';
   //   this.$input.focus();
   // })
+
+  // App에서 등록해 놓은 removeAll 이벤트를 여기서 dispatch 시켰음.
+  this.$element.querySelector('.remove-all').addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent('removeAll'))
+  })
 }
