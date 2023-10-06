@@ -57,13 +57,15 @@ function TodoList({ $target, initialState, onRemove, onToggle }) {
 
   // 이렇게 이벤트 버블링을 이용한 이벤트 위임을 통해 이벤트를 최적화해서 사용할 수 있음.
   this.$element.addEventListener('click', (e) => {
-    // closest 같은 api로 li를 찾아서 dataset를 간편하게 이용할 수 있는 방법도 있음.
+    // closest 같은 api로 특정 태그를 편하게 찾아올 수 있음.
+    // 이런 api들은 여러개 있으니 잘 활용하면 좋음
     const $li = e.target.closest('li');
     if(!$li){
       throw new Error('li 태그가 존재 하지 않습니다.');
     }
     // 커스텀 어트리뷰트로 불러오는 값은 무조건 스트링 값이라는 것을 알아두자.
     const i = parseInt($li.dataset.index);
+    // $li.getAttribute('data-index'); // 이런식으로 api를 활용해서 가져오는 방법이 있기는 함.
 
     // e.target을 통해 잡히는 타겟을 이용하면 이벤트 위임을 잘 구현할 수 있다.
     // ul에 걸어놓은 한개의 이벤트로 li, button에서 필요한 이벤트를 한번에 구현할 수 있다.
