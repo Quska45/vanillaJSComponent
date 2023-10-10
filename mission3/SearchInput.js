@@ -1,4 +1,4 @@
-function SearchInput({ $target, onSearch }){
+export default function SearchInput({ $target, onSearch }){
     this.$element = document.createElement('input');
     $target.appendChild(this.$element);
 

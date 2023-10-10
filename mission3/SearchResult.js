@@ -1,4 +1,4 @@
-function SearchResult({ $target, initialState }){
+export default function SearchResult({ $target, initialState }){
     this.state = initialState;
 
     this.$element = document.createElement('div');
