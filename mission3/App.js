@@ -1,12 +1,13 @@
 import SearchInput from "./SearchInput.js";
 import SearchResult from "./SearchResult.js";
 import { fetchLiveList } from "./api.js";
+import debounce from "./debounce.js";
 
 export default function App({ $target, initialState }) {
     this.state = initialState;
     const searchInput = new SearchInput({
         $target,
-        onSearch: async (keyword) => {
+        onSearch: debounce(async (keyword) => {
             try {
                 const data = await fetchLiveList(keyword)
                 console.log(JSON.stringify(data, null, 2));
@@ -15,7 +16,7 @@ export default function App({ $target, initialState }) {
             } catch (error) {
                 alert('데이터를 가져오는데 문제가 있습니다.');
             }
-        }
+        }),
     });
 
     const searchResult = new SearchResult({$target, initialState: []});
