@@ -1,1 +1,2 @@
-export const SEARCH_HISTORY_KEY = 'SEARCH_HISTORY';
+// export const SEARCH_HISTORY_KEY = 'SEARCH_HISTORY';
+export const APP_STORED_KEY = 'APP_STORED_KEY';

@@ -4,7 +4,7 @@ import SearchHistory from "./SearchHistory.js";
 import { fetchLiveList } from "./api.js";
 import debounce from "./debounce.js";
 import * as localStorage from './localStorage.js';
-import { SEARCH_HISTORY_KEY } from './constants.js';
+import { APP_STORED_KEY } from './constants.js';
 
 // 매직넘버를 사용하게 될 경우 이런식으로 의미를 부여한 상수로 분리해서 사용한다.
 const MAX_HISTORY_COUNT = 5;
@@ -99,8 +99,7 @@ export default function App({ $target, initialState }) {
         searchResult.setState(this.state.liveItems);
         searchHistory.setState(this.state.histories);
 
-        localStorage.setItem(SEARCH_HISTORY_KEY, this.state.histories);
-        console.log('localStorage.getItem(SEARCH_HISTORY_KEY)', localStorage.getItem(SEARCH_HISTORY_KEY, []));
+        localStorage.setItem(APP_STORED_KEY, this.state);
     };
 }
 
