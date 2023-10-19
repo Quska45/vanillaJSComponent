@@ -1,4 +1,4 @@
-function TodoList(params) {
+export default function TodoList(params) {
     const $target = params.$target
     const onClick = params.onClick
     const onRemove = params.onRemove
