@@ -90,7 +90,19 @@ export default function App({ $target, initialState }) {
 
     const searchResult = new SearchResult({
         $target,
-        initialState: this.state.liveItems
+        initialState: this.state.liveItems,
+        onMusicianClick: async (musicianName) => {
+            try {
+                const liveItems = await fetchLiveList(musicianName);
+                this.setState({
+                    ...this.state,
+                    liveItems,
+                    keyword: musicianName
+                });
+            } catch (error) {
+                alert('데이터를 가져오는데 문제가 있습니다.');
+            }
+        }
     });
 
     this.setState = (nextState) => {
